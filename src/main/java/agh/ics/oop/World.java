@@ -27,6 +27,7 @@ public class World {
     }
 
     public static void main(String[] args) {
+
         System.out.println("Start");
 
         Vector2d position1 = new Vector2d(1, 2);
