@@ -12,8 +12,6 @@ public class OptionsParser {
                 case "b", "backward" -> list.add(MoveDirection.BACKWARD);
                 case "r", "right" -> list.add(MoveDirection.RIGHT);
                 case "l", "left" -> list.add(MoveDirection.LEFT);
-                default -> {
-                }
             }
         }
         return list.toArray(new MoveDirection[0]);
