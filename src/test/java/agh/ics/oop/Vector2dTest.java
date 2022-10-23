@@ -9,7 +9,7 @@ public class Vector2dTest {
         Assertions.assertEquals(new Vector2d(1, 2), new Vector2d(1, 2));
         Assertions.assertNotEquals(new Vector2d(2, 1), new Vector2d(1, 2));
         Assertions.assertNotEquals(new Vector2d(0, -1), new Vector2d(0, 1));
-        Assertions.assertNotEquals(Direction.FORWARD, new Vector2d(1, 0));
+        Assertions.assertNotEquals(MoveDirection.FORWARD, new Vector2d(1, 0));
     }
 
     @Test
