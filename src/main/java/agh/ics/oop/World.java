@@ -2,6 +2,7 @@ package agh.ics.oop;
 
 public class World {
     public static void main(String[] args) {
+
         System.out.println("Start");
         MoveDirection[] directions = new OptionsParser().parse(args);
         IWorldMap map = new RectangularMap(10, 5);
