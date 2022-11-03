@@ -1,12 +1,13 @@
 package agh.ics.oop;
 
+import java.util.ArrayList;
+
 public class RectangularMap implements IWorldMap {
-    private final Animal[][] map;
+    public final ArrayList<Animal> animals = new ArrayList<>();
     private final int width;
     private final int height;
 
     public RectangularMap(int width, int height) {
-        this.map = new Animal[height][width];
         this.height = height;
         this.width = width;
     }
@@ -18,42 +19,29 @@ public class RectangularMap implements IWorldMap {
 
     @Override
     public boolean place(Animal animal) {
-        if (this.canMoveTo(animal.getPosition())) {
-            this.map[animal.getPosition().y][animal.getPosition().x] = animal;
+        if (canMoveTo(animal.getPosition())) {
+            this.animals.add(animal);
             return true;
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public boolean isOccupied(Vector2d position) {
-        if (position.follows(new Vector2d(0, 0)) && position.precedes(new Vector2d(this.width - 1, this.height - 1))) {
-            return this.objectAt(position) != null;
         }
         return false;
     }
 
     @Override
+    public boolean isOccupied(Vector2d position) {
+        return objectAt(position) != null;
+    }
+
+    @Override
     public Object objectAt(Vector2d position) {
-        if (position.follows(new Vector2d(0, 0)) && position.precedes(new Vector2d(this.width - 1, this.height - 1))) {
-            return this.map[position.y][position.x];
+        for (Animal animal: this.animals) {
+            if (animal.isAt(position)) {
+                return animal;
+            }
         }
         return null;
     }
 
     public String toString() {
-        MapVisualizer newVisualizer = new MapVisualizer(this);
-        return newVisualizer.draw(new Vector2d(0, 0), new Vector2d(this.width - 1, this.height - 1));
-    }
-
-    // Można zmodyfikować metody place, żeby wstawiała nulle, ale wydaje mi się, że odanie tej metody,
-    // zwiększa czytelność kodu
-    @Override
-    public void setNull(Vector2d position) {
-        if (position.follows(new Vector2d(0, 0)) && position.precedes(new Vector2d(this.width - 1, this.height - 1))) {
-            this.map[position.y][position.x] = null;
-        }
-
+        return new MapVisualizer(this).draw(new Vector2d(0, 0), new Vector2d(this.width - 1, this.height - 1));
     }
 }

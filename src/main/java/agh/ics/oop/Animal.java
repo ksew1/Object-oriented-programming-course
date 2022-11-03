@@ -26,10 +26,10 @@ public class Animal {
 
     public String toString() {
         return switch (this.direction) {
-            case NORTH -> this.position + ",N";
-            case SOUTH -> this.position + ",S";
-            case EAST -> this.position + ",E";
-            case WEST -> this.position + ",W";
+            case NORTH -> "N";
+            case SOUTH -> "S";
+            case EAST -> "E";
+            case WEST -> "W";
         };
     }
 
@@ -42,17 +42,13 @@ public class Animal {
             case FORWARD -> {
                 Vector2d newPosition = this.position.add(this.direction.toUnitVector());
                 if (this.map.canMoveTo(newPosition)) {
-                    this.map.setNull(this.position);
                     this.position = newPosition;
-                    this.map.place(this);
                 }
             }
             case BACKWARD -> {
                 Vector2d newPosition = this.position.subtract(this.direction.toUnitVector());
                 if (this.map.canMoveTo(newPosition)) {
-                    this.map.setNull(this.position);
                     this.position = newPosition;
-                    this.map.place(this);
                 }
             }
             case RIGHT -> this.direction = this.direction.next();
