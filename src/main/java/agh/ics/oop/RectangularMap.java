@@ -1,9 +1,7 @@
 package agh.ics.oop;
 
-import java.util.ArrayList;
 
-public class RectangularMap implements IWorldMap {
-    public final ArrayList<Animal> animals = new ArrayList<>();
+public class RectangularMap extends AbstractWorldMap {
     private final int width;
     private final int height;
 
@@ -13,35 +11,18 @@ public class RectangularMap implements IWorldMap {
     }
 
     @Override
-    public boolean canMoveTo(Vector2d position) {
-        return position.follows(new Vector2d(0, 0)) && position.precedes(new Vector2d(this.width - 1, this.height - 1)) && !this.isOccupied(position);
+    protected Vector2d getLowerLeft() {
+        return new Vector2d(0, 0);
     }
 
     @Override
-    public boolean place(Animal animal) {
-        if (canMoveTo(animal.getPosition())) {
-            this.animals.add(animal);
-            return true;
-        }
-        return false;
+    protected Vector2d getUpperRight() {
+        return new Vector2d(this.width-1, this.height-1);
     }
 
     @Override
-    public boolean isOccupied(Vector2d position) {
-        return objectAt(position) != null;
-    }
-
-    @Override
-    public Object objectAt(Vector2d position) {
-        for (Animal animal: this.animals) {
-            if (animal.isAt(position)) {
-                return animal;
-            }
-        }
-        return null;
-    }
-
-    public String toString() {
-        return new MapVisualizer(this).draw(new Vector2d(0, 0), new Vector2d(this.width - 1, this.height - 1));
+    protected boolean isInBorders(Vector2d position) {
+        return position.follows(new Vector2d(0, 0)) &&
+                position.precedes(new Vector2d(this.width - 1, this.height - 1));
     }
 }

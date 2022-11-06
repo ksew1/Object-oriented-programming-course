@@ -1,15 +1,16 @@
 package agh.ics.oop;
 
-public class Animal {
+import java.util.concurrent.ThreadLocalRandom;
+
+public class Animal extends AbstractWorldMapElement {
     private MapDirection direction;
-    private Vector2d position;
     private IWorldMap map;
 
     public Animal(IWorldMap map) {
         this.direction = MapDirection.NORTH;
         this.position = new Vector2d(2, 2);
+        eatGrass(this.position);
         this.map = map;
-
     }
 
     public Animal(IWorldMap map, Vector2d initialPosition) {
@@ -33,21 +34,19 @@ public class Animal {
         };
     }
 
-    public boolean isAt(Vector2d position) {
-        return this.position.equals(position);
-    }
-
     public void move(MoveDirection direction) {
         switch (direction) {
             case FORWARD -> {
                 Vector2d newPosition = this.position.add(this.direction.toUnitVector());
                 if (this.map.canMoveTo(newPosition)) {
+                    eatGrass(newPosition);
                     this.position = newPosition;
                 }
             }
             case BACKWARD -> {
                 Vector2d newPosition = this.position.subtract(this.direction.toUnitVector());
                 if (this.map.canMoveTo(newPosition)) {
+                    eatGrass(newPosition);
                     this.position = newPosition;
                 }
             }
@@ -60,7 +59,22 @@ public class Animal {
         return this.direction;
     }
 
-    public Vector2d getPosition() {
-        return this.position;
+    private void eatGrass(Vector2d position) {
+        AbstractWorldMapElement element = (AbstractWorldMapElement) this.map.objectAt(position);
+        if (element instanceof Grass) {
+            Grass grass = (Grass) element;
+            GrassField grassField = (GrassField) this.map;
+
+            int n = grassField.getN();
+
+            int y = (int) Math.sqrt(n * 10);
+            int x = (int) Math.sqrt(n * 10);
+            Vector2d newPosition;
+            do {
+                newPosition = new Vector2d(ThreadLocalRandom.current().nextInt(0, x + 1),
+                        ThreadLocalRandom.current().nextInt(0, y + 1));
+            } while (this.map.isOccupied(newPosition));
+            grass.setPosition(newPosition);
+        }
     }
 }
