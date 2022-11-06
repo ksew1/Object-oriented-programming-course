@@ -22,8 +22,8 @@ public class GrassField extends AbstractWorldMap {
 
     @Override
     protected Vector2d getLowerLeft() {
-        int x = elements.get(0).getPosition().x;
-        int y = elements.get(0).getPosition().y;
+        int x = Integer.MAX_VALUE;
+        int y = Integer.MAX_VALUE;
         for (AbstractWorldMapElement element: this.elements) {
             x = Math.min(x, element.getPosition().x);
             y = Math.min(y, element.getPosition().y);
@@ -33,8 +33,8 @@ public class GrassField extends AbstractWorldMap {
 
     @Override
     protected Vector2d getUpperRight() {
-        int x = elements.get(0).getPosition().x;
-        int y = elements.get(0).getPosition().y;
+        int x = Integer.MIN_VALUE;
+        int y = Integer.MIN_VALUE;
         for (AbstractWorldMapElement element: this.elements) {
             x = Math.max(x, element.getPosition().x);
             y = Math.max(y, element.getPosition().y);
@@ -44,7 +44,8 @@ public class GrassField extends AbstractWorldMap {
 
     @Override
     protected boolean isInBorders(Vector2d position) {
-        return position.follows(new Vector2d(0, 0));
+        return position.follows(new Vector2d(0, 0)) &&
+                position.precedes(new Vector2d(Integer.MAX_VALUE, Integer.MAX_VALUE));
     }
 
     public int getN() {

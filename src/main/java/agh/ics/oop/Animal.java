@@ -9,7 +9,6 @@ public class Animal extends AbstractWorldMapElement {
     public Animal(IWorldMap map) {
         this.direction = MapDirection.NORTH;
         this.position = new Vector2d(2, 2);
-        eatGrass(this.position);
         this.map = map;
     }
 
@@ -18,9 +17,6 @@ public class Animal extends AbstractWorldMapElement {
         if (map.canMoveTo(initialPosition)) {
             this.position = initialPosition;
             this.map = map;
-        } else {
-            this.position = new Vector2d(2, 2);
-            map.place(this);
         }
     }
 
