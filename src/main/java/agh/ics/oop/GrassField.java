@@ -16,7 +16,7 @@ public class GrassField extends AbstractWorldMap {
                 newPosition = new Vector2d(ThreadLocalRandom.current().nextInt(0, x + 1),
                         ThreadLocalRandom.current().nextInt(0, y + 1));
             } while (this.isOccupied(newPosition));
-            this.elements.add(new Grass(newPosition));
+            this.elements.put(newPosition, new Grass(newPosition));
         }
     }
 
@@ -24,9 +24,9 @@ public class GrassField extends AbstractWorldMap {
     protected Vector2d getLowerLeft() {
         int x = Integer.MAX_VALUE;
         int y = Integer.MAX_VALUE;
-        for (AbstractWorldMapElement element: this.elements) {
-            x = Math.min(x, element.getPosition().x);
-            y = Math.min(y, element.getPosition().y);
+        for (Vector2d key : this.elements.keySet()) {
+            x = Math.min(x, key.x);
+            y = Math.min(y, key.y);
         }
         return new Vector2d(x, y);
     }
@@ -35,9 +35,9 @@ public class GrassField extends AbstractWorldMap {
     protected Vector2d getUpperRight() {
         int x = Integer.MIN_VALUE;
         int y = Integer.MIN_VALUE;
-        for (AbstractWorldMapElement element: this.elements) {
-            x = Math.max(x, element.getPosition().x);
-            y = Math.max(y, element.getPosition().y);
+        for (Vector2d key : this.elements.keySet()) {
+            x = Math.max(x, key.x);
+            y = Math.max(y, key.y);
         }
         return new Vector2d(x, y);
     }

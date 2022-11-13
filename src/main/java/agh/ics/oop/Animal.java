@@ -1,27 +1,30 @@
 package agh.ics.oop;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Animal extends AbstractWorldMapElement {
     private MapDirection direction;
     private IWorldMap map;
+    private final List<IPositionChangeObserver> observers = new ArrayList<>();
 
     public Animal(IWorldMap map) {
-        if (map.canMoveTo(new Vector2d(2, 2))) {
-            this.direction = MapDirection.NORTH;
-            this.position = new Vector2d(2, 2);
-            this.map = map;
-            this.eatGrass(this.position);
-        }
+
+        this.direction = MapDirection.NORTH;
+        this.position = new Vector2d(2, 2);
+        this.map = map;
+        this.eatGrass(this.position);
+        addObserver((IPositionChangeObserver) this.map);
+
     }
 
     public Animal(IWorldMap map, Vector2d initialPosition) {
-        if (map.canMoveTo(initialPosition)) {
-            this.direction = MapDirection.NORTH;
-            this.position = initialPosition;
-            this.map = map;
-            this.eatGrass(this.position);
-        }
+        this.direction = MapDirection.NORTH;
+        this.position = initialPosition;
+        this.map = map;
+        this.eatGrass(this.position);
+        addObserver((IPositionChangeObserver) this.map);
     }
 
 
@@ -38,16 +41,20 @@ public class Animal extends AbstractWorldMapElement {
         switch (direction) {
             case FORWARD -> {
                 Vector2d newPosition = this.position.add(this.direction.toUnitVector());
+                Vector2d oldPosition = this.position;
                 if (this.map.canMoveTo(newPosition)) {
                     eatGrass(newPosition);
                     this.position = newPosition;
+                    positionChanged(oldPosition);
                 }
             }
             case BACKWARD -> {
                 Vector2d newPosition = this.position.subtract(this.direction.toUnitVector());
+                Vector2d oldPosition = this.position;
                 if (this.map.canMoveTo(newPosition)) {
                     eatGrass(newPosition);
                     this.position = newPosition;
+                    positionChanged(oldPosition);
                 }
             }
             case RIGHT -> this.direction = this.direction.next();
@@ -58,6 +65,21 @@ public class Animal extends AbstractWorldMapElement {
     public MapDirection getDirection() {
         return this.direction;
     }
+
+    void addObserver(IPositionChangeObserver observer) {
+        this.observers.add(observer);
+    }
+
+    void removeObserver(IPositionChangeObserver observer) {
+        this.observers.remove(observer);
+    }
+
+    void positionChanged(Vector2d position) {
+        for (IPositionChangeObserver observer : this.observers) {
+            observer.positionChanged(position, this.position);
+        }
+    }
+
 
     private void eatGrass(Vector2d position) {
         AbstractWorldMapElement element = (AbstractWorldMapElement) this.map.objectAt(position);
