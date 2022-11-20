@@ -24,8 +24,10 @@ public class RectangularMapTest {
         IWorldMap map = new RectangularMap(5, 5);
         Assertions.assertTrue(map.place(new Animal(map, new Vector2d(2, 3))));
         Assertions.assertTrue(map.place(new Animal(map, new Vector2d(3, 2))));
-        Assertions.assertFalse(map.place(new Animal(map, new Vector2d(2, 3))));
-        Assertions.assertFalse(map.place(new Animal(map, new Vector2d(5, 6))));
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> map.place(new Animal(map, new Vector2d(2, 3))));
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> map.place(new Animal(map, new Vector2d(5, 6))));
     }
 
     @Test

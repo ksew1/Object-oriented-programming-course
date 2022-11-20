@@ -7,39 +7,30 @@ public class GrassField extends AbstractWorldMap {
 
     public GrassField(int n) {
         this.n = n;
-        int y = (int) Math.sqrt(n * 10);
-        int x = (int) Math.sqrt(n * 10);
 
         for (int i = 0; i < n; i++) {
-            Vector2d newPosition;
-            do {
-                newPosition = new Vector2d(ThreadLocalRandom.current().nextInt(0, x + 1),
-                        ThreadLocalRandom.current().nextInt(0, y + 1));
-            } while (this.isOccupied(newPosition));
-            this.elements.put(newPosition, new Grass(newPosition));
+            createGrass();
         }
     }
 
     @Override
-    protected Vector2d getLowerLeft() {
-        int x = Integer.MAX_VALUE;
-        int y = Integer.MAX_VALUE;
-        for (Vector2d key : this.elements.keySet()) {
-            x = Math.min(x, key.x);
-            y = Math.min(y, key.y);
+    public boolean canMoveTo(Vector2d position) {
+        if (objectAt(position) instanceof Grass) {
+            this.elements.remove(position);
+            this.mapBoundary.removePosition(position);
+            createGrass();
         }
-        return new Vector2d(x, y);
+        return isInBorders(position) && !(objectAt(position) instanceof Animal);
     }
 
     @Override
-    protected Vector2d getUpperRight() {
-        int x = Integer.MIN_VALUE;
-        int y = Integer.MIN_VALUE;
-        for (Vector2d key : this.elements.keySet()) {
-            x = Math.max(x, key.x);
-            y = Math.max(y, key.y);
-        }
-        return new Vector2d(x, y);
+    public Vector2d getLowerLeft() {
+        return mapBoundary.getLowerLeft();
+    }
+
+    @Override
+    public Vector2d getUpperRight() {
+        return mapBoundary.getUpperRight();
     }
 
     @Override
@@ -48,7 +39,15 @@ public class GrassField extends AbstractWorldMap {
                 position.precedes(new Vector2d(Integer.MAX_VALUE, Integer.MAX_VALUE));
     }
 
-    public int getN() {
-        return this.n;
+    public void createGrass() {
+        int y = (int) Math.sqrt(this.n * 10);
+        int x = (int) Math.sqrt(this.n * 10);
+        Vector2d newPosition;
+        do {
+            newPosition = new Vector2d(ThreadLocalRandom.current().nextInt(0, x + 1),
+                    ThreadLocalRandom.current().nextInt(0, y + 1));
+        } while (this.isOccupied(newPosition));
+        this.elements.put(newPosition, new Grass(newPosition));
+        mapBoundary.addPosition(newPosition);
     }
 }

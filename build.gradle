@@ -1,4 +1,9 @@
+/* Niestety JavaFx nie działał mi na wersji pokazanej na skrypcie do lab7. Program zaczął
+działać dopiero na nowszej wersji stąd w build.gradle javafx plugin jest w wersji 0.0.13 a nie 0.0.11
+ a  javafx w wersji 19 a nie 17*/
+
 plugins {
+    id 'org.openjfx.javafxplugin' version '0.0.13'
     id 'application'
     id 'java'
 }
@@ -8,6 +13,11 @@ version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+}
+
+javafx {
+    version = "19"
+    modules = [ 'javafx.controls' ]
 }
 
 dependencies {

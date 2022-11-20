@@ -11,13 +11,18 @@ public class RectangularMap extends AbstractWorldMap {
     }
 
     @Override
-    protected Vector2d getLowerLeft() {
+    public boolean canMoveTo(Vector2d position) {
+        return isInBorders(position) && !(objectAt(position) instanceof Animal);
+    }
+
+    @Override
+    public Vector2d getLowerLeft() {
         return new Vector2d(0, 0);
     }
 
     @Override
-    protected Vector2d getUpperRight() {
-        return new Vector2d(this.width-1, this.height-1);
+    public Vector2d getUpperRight() {
+        return new Vector2d(this.width - 1, this.height - 1);
     }
 
     @Override

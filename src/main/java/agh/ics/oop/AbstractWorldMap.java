@@ -6,25 +6,23 @@ import java.util.Map;
 
 public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver {
     protected final Map<Vector2d, AbstractWorldMapElement> elements = new HashMap<>();
+    protected MapBoundary mapBoundary = new MapBoundary(this);
 
     protected abstract boolean isInBorders(Vector2d position);
 
-    protected abstract Vector2d getLowerLeft();
+    public abstract Vector2d getLowerLeft();
 
-    protected abstract Vector2d getUpperRight();
+    public abstract Vector2d getUpperRight();
 
-    @Override
-    public boolean canMoveTo(Vector2d position) {
-        return isInBorders(position) && !(objectAt(position) instanceof Animal);
-    }
 
     @Override
     public boolean place(Animal animal) {
         if (canMoveTo(animal.getPosition())) {
             this.elements.put(animal.getPosition(), animal);
+            this.mapBoundary.addPosition(animal.getPosition());
             return true;
         }
-        return false;
+        throw new IllegalArgumentException("Position " + animal.getPosition() + "is not available");
     }
 
     @Override
@@ -42,6 +40,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         AbstractWorldMapElement animal = this.elements.get(oldPosition);
         this.elements.remove(oldPosition);
         this.elements.put(newPosition, animal);
+        this.mapBoundary.positionChanged(oldPosition, newPosition);
     }
 
     public String toString() {

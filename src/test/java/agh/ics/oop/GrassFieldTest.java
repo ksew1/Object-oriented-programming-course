@@ -23,8 +23,10 @@ public class GrassFieldTest {
         IWorldMap map = new GrassField(1);
         Assertions.assertTrue(map.place(new Animal(map, new Vector2d(435, 845350))));
         Assertions.assertTrue(map.place(new Animal(map, new Vector2d(1, 1))));
-        Assertions.assertFalse(map.place(new Animal(map, new Vector2d(1, 1))));
-        Assertions.assertFalse(map.place(new Animal(map, new Vector2d(-2, -100))));
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> map.place(new Animal(map, new Vector2d(1, 1))));
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> map.place(new Animal(map, new Vector2d(-2, -100))));
     }
 
     @Test
