@@ -5,13 +5,8 @@ import javafx.application.Application;
 
 public class World {
     public static void main(String[] args) {
-        try {
-            System.out.println("Start");
-            Application.launch(App.class, args);
-            System.out.println("Stop");
-        } catch (IllegalArgumentException exception) {
-            System.out.println("Error");
-            exception.printStackTrace();
-        }
+        System.out.println("Start");
+        Application.launch(App.class, args);
+        System.out.println("Stop");
     }
 }
