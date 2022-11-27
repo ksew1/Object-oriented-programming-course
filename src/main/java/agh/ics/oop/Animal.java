@@ -2,7 +2,7 @@ package agh.ics.oop;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+
 
 public class Animal extends AbstractWorldMapElement {
     private MapDirection direction;
@@ -74,5 +74,19 @@ public class Animal extends AbstractWorldMapElement {
         for (IPositionChangeObserver observer : this.observers) {
             observer.positionChanged(position, this.position);
         }
+    }
+
+    @Override
+    public String getLabel() {
+        return "Z " + this.getPosition();
+    }
+    @Override
+    public String getImage() {
+        return switch (this.direction) {
+            case NORTH -> "/src/main/resources/up.png";
+            case SOUTH -> "/src/main/resources/down.png";
+            case EAST -> "/src/main/resources/right.png";
+            case WEST -> "/src/main/resources/left.png";
+        };
     }
 }

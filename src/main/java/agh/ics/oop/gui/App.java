@@ -5,32 +5,39 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
+
+import java.io.FileNotFoundException;
 
 public class App extends Application {
     private AbstractWorldMap map;
+    private final GridPane grid = new GridPane();
+    private SimulationEngine engine;
+
     public void init() {
         try {
-            MoveDirection[] directions = new OptionsParser().parse(getParameters().getRaw().toArray(new String[0]));
             this.map = new GrassField(10);
             Vector2d[] positions = {new Vector2d(2, 2), new Vector2d(3, 4)};
-            IEngine engine = new SimulationEngine(directions, this.map, positions);
-            engine.run();
-        } catch (IllegalArgumentException exception) {
-            exception.printStackTrace();
+            this.engine = new SimulationEngine(this.map, positions, this, 300);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
             Platform.exit();
         }
     }
 
-    public void start(Stage primaryStage) {
-        int width = 20;
-        int height = 20;
-        GridPane grid = new GridPane();
-        grid.setGridLinesVisible(true);
+    public void renderGrid() {
+        int width = 50;
+        int height = 50;
+
+        this.grid.setGridLinesVisible(false);
+        this.grid.getChildren().clear();
+        this.grid.getColumnConstraints().clear();
+        this.grid.getRowConstraints().clear();
+        this.grid.setGridLinesVisible(true);
 
         Label mainLabel = new Label("y/x");
         GridPane.setHalignment(mainLabel, HPos.CENTER);
@@ -56,17 +63,37 @@ public class App extends Application {
         for (int i = map.getLowerLeft().x, gridColumnIndex = 1; i < map.getUpperRight().x + 1; i++, gridColumnIndex++) {
             for (int j = map.getUpperRight().y, gridRowIndex = 1; j > map.getLowerLeft().y - 1; j--, gridRowIndex++) {
                 if (map.objectAt(new Vector2d(i, j)) != null) {
-                    Label label = new Label(map.objectAt(new Vector2d(i, j)).toString());
-                    grid.add(label, gridColumnIndex, gridRowIndex, 1, 1);
-                    GridPane.setHalignment(label, HPos.CENTER);
+                    GuiElementBox element;
+                    try {
+                        element = new GuiElementBox((IMapElement) map.objectAt(new Vector2d(i, j)));
+                    } catch (FileNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                    grid.add(element.getStyleableNode(), gridColumnIndex, gridRowIndex, 1, 1);
                 }
             }
         }
-
         grid.getColumnConstraints().add(new ColumnConstraints(width));
         grid.getRowConstraints().add(new RowConstraints(height));
+    }
 
-        Scene scene = new Scene(grid, 400, 400);
+    public void start(Stage primaryStage) {
+        renderGrid();
+        OptionsParser parser = new OptionsParser();
+
+        Button start = new Button("start");
+        TextField moveDirectionsInput = new TextField();
+        VBox gui = new VBox(new HBox(moveDirectionsInput, start), this.grid);
+        gui.setSpacing(20);
+
+        start.setOnAction((click) -> {
+            MoveDirection[] moveDirections = parser.parse(moveDirectionsInput.getText().split(" "));
+            this.engine.setMoves(moveDirections);
+            Thread newEngineThread = new Thread(this.engine);
+            newEngineThread.start();
+            moveDirectionsInput.clear();
+        });
+        Scene scene = new Scene(gui, 700, 700);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
