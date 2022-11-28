@@ -15,7 +15,7 @@ public class GrassFieldTest {
         Assertions.assertTrue(map.canMoveTo(new Vector2d(100, 8)));
         Assertions.assertTrue(map.canMoveTo(new Vector2d(6, 6)));
         Assertions.assertFalse(map.canMoveTo(new Vector2d(7, 4)));
-        Assertions.assertFalse(map.canMoveTo(new Vector2d(-1, 0)));
+        Assertions.assertTrue(map.canMoveTo(new Vector2d(-1, 0)));
     }
 
     @Test
@@ -26,7 +26,7 @@ public class GrassFieldTest {
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> map.place(new Animal(map, new Vector2d(1, 1))));
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> map.place(new Animal(map, new Vector2d(-2, -100))));
+                () -> map.place(new Animal(map, new Vector2d(435, 845350))));
     }
 
     @Test
