@@ -35,7 +35,7 @@ public class GrassField extends AbstractWorldMap {
 
     @Override
     protected boolean isInBorders(Vector2d position) {
-        return position.follows(new Vector2d(0, 0)) &&
+        return position.follows(new Vector2d(Integer.MIN_VALUE, Integer.MIN_VALUE)) &&
                 position.precedes(new Vector2d(Integer.MAX_VALUE, Integer.MAX_VALUE));
     }
 
