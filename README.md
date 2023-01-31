@@ -1,6 +1,5 @@
 # Object oriented programming course at AGH UST
 
-# Object Oriented Programming course
 
 This repository was made to maintain a project developed throughout each lab. Started from scratch - the goal was to make life simulation program - [I have made my own here!](https://github.com/ksew1/Simulation-Engine)
 
